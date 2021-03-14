@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import App from "./App";
+import React, { Component } from 'react';
 
 class Welcome extends Component {
   render() {
