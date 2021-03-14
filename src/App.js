@@ -20,12 +20,16 @@ class App extends Component {
     };
   }
 
+  //When the component is mounted, check if there is a user and update the state so its info can be displayed
   componentDidMount() {
-    const ref = firebase.database().ref("user");
-
-    ref.on("value", (snapshot) => {
-      let FBUser = snapshot.val();
-      this.setState({ user: FBUser });
+    firebase.auth().onAuthStateChanged((FBUser) => {
+      if (FBUser) {
+        this.setState({
+          user: FBUser,
+          displayName: FBUser.displayName,
+          userID: FBUser.uid,
+        });
+      }
     });
   }
 
@@ -45,11 +49,34 @@ class App extends Component {
     });
   };
 
+  //Logout the user by setting the state to null and calling a firebase function that signOut the user and then navigate to the login route
+  logoutUser = (e) => {
+    e.preventDefault();
+    this.setState({
+      user: null,
+      displayName: null,
+      userID: null,
+    });
+
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        navigate("/login");
+      });
+  };
+
+  //Main render that displays all the components
   render() {
     return (
       <div>
-        <Navigation user={this.state.user} />
-        {this.state.user && <Welcome user={this.state.displayName} />}
+        <Navigation user={this.state.user} logoutUser={this.logOutUser} />
+        {this.state.user && (
+          <Welcome
+            userName={this.state.displayName}
+            logoutUser={this.logOutUser}
+          />
+        )}
 
         <Router>
           <Home path="/" user={this.state.user} />
