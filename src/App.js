@@ -44,12 +44,30 @@ class App extends Component {
       });
     });
   };
+  //Logout the user by setting the state to null and calling a firebase function that signOut the user and then navigate to the login route
+  logoutUser = (e) => {
+    e.preventDefault();
+    this.setState({
+      user: null,
+      displayName: null,
+      userID: null,
+    });
+
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        navigate("/login");
+      });
+  };
 
   render() {
     return (
       <div>
-        <Navigation user={this.state.user} />
-        {this.state.user && <Welcome user={this.state.displayName} />}
+        <Navigation user={this.state.user} logoutUser={this.logoutUser} />
+        {this.state.user && (
+          <Welcome user={this.state.displayName} logoutUser={this.logoutUser} />
+        )}
 
         <Router>
           <Home path="/" user={this.state.user} />

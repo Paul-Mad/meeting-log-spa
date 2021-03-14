@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-
+import React, { Component } from "react";
 class Welcome extends Component {
   render() {
-    const { user } = this.props;
+    const { user, logoutUser } = this.props;
 
     return (
       <div className="text-center mt-4">
@@ -10,7 +9,11 @@ class Welcome extends Component {
           Welcome {user}
         </span>
         ,
-        <a href="/" className="font-weight-bold text-primary pl-1">
+        <a
+          href="/"
+          className="font-weight-bold text-primary pl-1"
+          onClick={(e) => logoutUser(e)}
+        >
           log out
         </a>
       </div>
