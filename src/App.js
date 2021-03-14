@@ -20,6 +20,7 @@ class App extends Component {
     };
   }
 
+  //When the component is mounted, check if there is a user and update the state so its info can be displayed
   componentDidMount() {
     //get the user from  firebase auth and update the state with that user
     firebase.auth().onAuthStateChanged((FBUser) => {
@@ -98,18 +99,43 @@ class App extends Component {
     ref.push({ meetingName: meetingName });
   };
 
+  //Logout the user by setting the state to null and calling a firebase function that signOut the user and then navigate to the login route
+  logoutUser = (e) => {
+    e.preventDefault();
+    this.setState({
+      user: null,
+      displayName: null,
+      userID: null,
+    });
+
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        navigate("/login");
+      });
+  };
+
+  //Main render that displays all the components
   render() {
     return (
       <div>
         <Navigation user={this.state.user} logoutUser={this.logoutUser} />
         {this.state.user && (
-          <Welcome user={this.state.displayName} logoutUser={this.logoutUser} />
+          <Welcome
+            userName={this.state.displayName}
+            logoutUser={this.logoutUser}
+          />
         )}
 
         <Router>
           <Home path="/" user={this.state.user} />
           <Login path="/login" />
-          <Meetings path="/meetings" addMeeting={this.addMeeting} />
+          <Meetings
+            path="/meetings"
+            meetings={this.state.meetings}
+            addMeeting={this.addMeeting}
+          />
           <Register path="/register" registerUser={this.registerUser} />
         </Router>
       </div>

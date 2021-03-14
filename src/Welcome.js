@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 class Welcome extends Component {
   render() {
-    const { user, logoutUser } = this.props;
+    const { userName, logoutUser } = this.props;
 
     return (
       <div className="text-center mt-4">
         <span className="text-secondary font-weight-bold pl-1">
-          Welcome {user}
+          Welcome {userName}
         </span>
         ,
         <a
