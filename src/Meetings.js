@@ -68,10 +68,15 @@ class Meetings extends Component {
                   </h4>
                 </div>
               ) : null}
-
+              {
+                //Meeting List
+              }
               {this.props.meetings && (
                 <div className="list-group list-group-flush">
-                  <MeetingList meetings={this.props.meetings} />
+                  <MeetingList
+                    userID={this.props.userID}
+                    meetings={this.props.meetings}
+                  />
                 </div>
               )}
             </div>
