@@ -21,11 +21,42 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const ref = firebase.database().ref("user");
+    //get the user from  firebase auth and update the state with that user
+    firebase.auth().onAuthStateChanged((FBUser) => {
+      if (FBUser) {
+        this.setState({
+          user: FBUser,
+          displayName: FBUser.displayName,
+          userID: FBUser.uid,
+        });
 
-    ref.on("value", (snapshot) => {
-      let FBUser = snapshot.val();
-      this.setState({ user: FBUser });
+        //get the ref for the user uid from the meetings
+        const meetingRef = firebase.database().ref("meetings/" + FBUser.uid);
+        //console.log(meetingRef);
+        meetingRef.on("value", (snapshot) => {
+          let meetings = snapshot.val();
+
+          //Create an array of objects to list the meetings by meetingID and meetingName
+          const meetingList = [];
+          for (let item in meetings) {
+            meetingList.push({
+              meetingID: item,
+              meetingName: meetings[item].meetingName,
+            });
+          }
+          //console.log(meetingList); // [{meetingID,meetingName}]
+
+          //update the state with the meetings data
+          this.setState({
+            meetings: meetingList,
+            howManyMeetings: meetingList.length,
+          });
+        });
+
+        console.log(this.state);
+      } else {
+        this.setState({ user: null });
+      }
     });
   }
 
@@ -61,6 +92,12 @@ class App extends Component {
       });
   };
 
+  addMeeting = (meetingName) => {
+    const ref = firebase.database().ref(`meetings/${this.state.user.uid}`);
+    console.log(ref);
+    ref.push({ meetingName: meetingName });
+  };
+
   render() {
     return (
       <div>
@@ -72,7 +109,7 @@ class App extends Component {
         <Router>
           <Home path="/" user={this.state.user} />
           <Login path="/login" />
-          <Meetings path="/meetings" />
+          <Meetings path="/meetings" addMeeting={this.addMeeting} />
           <Register path="/register" registerUser={this.registerUser} />
         </Router>
       </div>
