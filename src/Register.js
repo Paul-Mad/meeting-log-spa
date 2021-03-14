@@ -3,8 +3,8 @@ import React, { Component } from "react";
 import FormError from "./FormError";
 
 class Register extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       displayName: "",
       email: "",
@@ -45,6 +45,10 @@ class Register extends Component {
         registrationInfo.email,
         registrationInfo.password
       )
+      .then(() => {
+        //Register the user displayName after the user auth creation
+        this.props.registerUser(registrationInfo.displayName);
+      })
       .catch((error) => {
         error.message !== null
           ? this.setState({ errorMessage: error.message })
