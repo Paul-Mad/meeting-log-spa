@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import AttendeesList from "./AttendeesList";
-import { FaUndo } from "react-icons/fa";
+import { FaRandom, FaUndo } from "react-icons/fa";
 
 import firebase from "./Firebase";
 
@@ -8,10 +8,12 @@ class Attendees extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { searchQuery: "", displayAttendees: [] };
+    this.state = { searchQuery: "", displayAttendees: [], allAttendees: [] };
 
     this.changeHandler = this.changeHandler.bind(this);
     this.resetQuery = this.resetQuery.bind(this);
+
+    this.chooseRandom = this.chooseRandom.bind(this);
   }
 
   //When component mount, get the list of the attendees from database
@@ -34,6 +36,7 @@ class Attendees extends Component {
         });
 
         this.setState({
+          allAttendees: attendeesList,
           displayAttendees: attendeesList,
         });
       }
@@ -46,7 +49,22 @@ class Attendees extends Component {
   };
 
   resetQuery() {
-    this.setState({ searchQuery: "" });
+    this.setState({
+      searchQuery: "",
+      displayAttendees: this.state.allAttendees,
+    });
+  }
+
+  //Choose a  random attendee from the list
+  chooseRandom() {
+    const randomAttendee = Math.floor(
+      Math.random() * this.state.allAttendees.length
+    );
+    this.resetQuery();
+
+    this.setState({
+      displayAttendees: [this.state.allAttendees[randomAttendee]],
+    });
   }
 
   render() {
@@ -75,6 +93,13 @@ class Attendees extends Component {
                     onChange={(e) => this.changeHandler(e)}
                   ></input>
                   <div className="input-group-append">
+                    <button
+                      className="btn btn-sm btn-outline-info"
+                      title="Pick a random attendee"
+                      onClick={this.chooseRandom}
+                    >
+                      <FaRandom />
+                    </button>
                     <button
                       className="btn btn-sm btn-outline-info"
                       title="reset search"
