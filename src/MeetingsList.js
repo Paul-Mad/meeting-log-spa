@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import firebase from "./Firebase";
-import { GoTrashcan } from "react-icons/go";
+import { GoListUnordered, GoTrashcan } from "react-icons/go";
 import { FaLink } from "react-icons/fa";
 import { navigate } from "@reach/router";
 
@@ -42,6 +42,16 @@ class MeetingsList extends Component {
               onClick={(e) => this.deleteMeeting(e, meeting.meetingID)}
             >
               <GoTrashcan />
+            </button>
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              title="Attendees List"
+              //When clicked, navigate to a meeting page passing the userID and meetingID
+              onClick={() =>
+                navigate(`/attendees/${this.props.userID}/${meeting.meetingID}`)
+              }
+            >
+              <GoListUnordered />
             </button>
           </section>
 

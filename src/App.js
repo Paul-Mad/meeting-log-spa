@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { navigate, Router } from "@reach/router";
 import firebase from "./Firebase";
 
+// Import Routes
 import Home from "./Home";
 import Welcome from "./Welcome";
 import Navigation from "./Navigation";
@@ -10,6 +11,7 @@ import Login from "./Login";
 import Register from "./Register";
 import Meetings from "./Meetings";
 import CheckIn from "./CheckIn";
+import Attendees from "./Attendees";
 
 class App extends Component {
   constructor() {
@@ -54,8 +56,6 @@ class App extends Component {
             howManyMeetings: meetingList.length,
           });
         });
-
-        console.log(this.state);
       } else {
         this.setState({ user: null });
       }
@@ -137,6 +137,10 @@ class App extends Component {
             meetings={this.state.meetings}
             addMeeting={this.addMeeting}
             userID={this.state.userID}
+          />
+          <Attendees
+            path="/attendees/:userID/:meetingID"
+            adminUser={this.state.userID}
           />
           <CheckIn path="/checkin/:userID/:meetingID" />
           <Register path="/register" registerUser={this.registerUser} />
