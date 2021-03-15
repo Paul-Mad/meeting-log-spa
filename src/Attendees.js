@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import AttendeesList from "./AttendeesList";
+import { FaUndo } from "react-icons/fa";
 
 import firebase from "./Firebase";
 
@@ -7,11 +8,13 @@ class Attendees extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      displayAttendees: [],
-    };
+    this.state = { searchQuery: "", displayAttendees: [] };
+
+    this.changeHandler = this.changeHandler.bind(this);
+    this.resetQuery = this.resetQuery.bind(this);
   }
 
+  //When component mount, get the list of the attendees from database
   componentDidMount() {
     const ref = firebase
       .database()
@@ -37,12 +40,52 @@ class Attendees extends Component {
     });
   }
 
+  // Search input changeHandler
+  changeHandler = (e) => {
+    this.setState({ [e.target.name]: e.target.value }); // eg: searchQuery: "Paulo"
+  };
+
+  resetQuery() {
+    this.setState({ searchQuery: "" });
+  }
+
   render() {
+    //Filter the data to search
+    const dataFilter = (item) =>
+      item.attendeeName
+        .toLowerCase()
+        .match(this.state.searchQuery.toLowerCase()) && true;
+
+    const filteredAttendees = this.state.displayAttendees.filter(dataFilter);
+
     return (
       <div className="container mt-4">
         <div className="row justify-content-center">
           <div className="col-md-8">
             <h1 className="font-weight-light text-center">Attendees</h1>
+            <div className="card bg-light mb-4">
+              <div className="card-body text-center">
+                <div className="input-group input-group-lg">
+                  <input
+                    type="text"
+                    name="searchQuery"
+                    placeholder="Search Attendees"
+                    className="form-control"
+                    value={this.state.searchQuery}
+                    onChange={(e) => this.changeHandler(e)}
+                  ></input>
+                  <div className="input-group-append">
+                    <button
+                      className="btn btn-sm btn-outline-info"
+                      title="reset search"
+                      onClick={this.resetQuery}
+                    >
+                      <FaUndo />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -50,7 +93,7 @@ class Attendees extends Component {
           userID={this.props.userID}
           adminUser={this.props.adminUser}
           meetingID={this.props.meetingID}
-          attendees={this.state.displayAttendees}
+          attendees={filteredAttendees}
         />
       </div>
     );
