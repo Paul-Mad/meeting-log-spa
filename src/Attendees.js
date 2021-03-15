@@ -27,6 +27,7 @@ class Attendees extends Component {
           attendeeID: item,
           attendeeName: attendees[item].attendeeName,
           attendeeEmail: attendees[item].attendeeEmail,
+          star: attendees[item].star,
         });
 
         this.setState({
